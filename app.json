@@ -1,11 +1,12 @@
 {
   "expo": {
-    "name": "food",
-    "slug": "food",
+    "name": "ctu-message",
+    "slug": "ctu-message-slug",
+    "owner": "vubinh69",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "com.ctu.ctumessage",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -16,14 +17,16 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to take photos.",
-        "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to select pictures."
-      }
+        "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to select pictures.",
+      },
+      "bundleIdentifier": "com.ctu.ctumessage"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ctu.ctumessage"
     },
     "web": {
       "bundler": "metro",
@@ -35,6 +38,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "6cf23a07-d354-41ab-8476-bc513fd0b34d"
+      }
     }
   }
 }

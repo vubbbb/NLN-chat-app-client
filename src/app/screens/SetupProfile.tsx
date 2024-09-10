@@ -150,7 +150,7 @@ const pickImage = async () => {
       <View className="m-8">
         <Image
           className="w-[150] h-[90] mb-8 mt-0"
-          source={require("@/assets/images/login logo.png")}
+          source={require("../../../assets/images/in_app_logo.png")}
         />
       </View>
       <View className="text-black mb-8">

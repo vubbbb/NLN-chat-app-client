@@ -4,11 +4,11 @@ import {
   createNativeStackNavigator,
   NativeStackScreenProps,
 } from "@react-navigation/native-stack";
-import LoginScreen from "./screens/login";
 import SetupProfileScreen from "./screens/SetupProfile";
 import ContactsScreen from "./screens/ContactsScreen";
 import ChatScreen from "./screens/ChatScreen";
 import { Image } from "react-native";
+import LoginScreen from "./screens/Login";
 
 // Định nghĩa kiểu cho các màn hình trong trình điều hướng
 export type RootStackParamList = {

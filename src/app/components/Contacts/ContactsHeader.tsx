@@ -1,51 +1,29 @@
 import React from "react";
 import { View, Text, Image, Button, TextInput } from "react-native";
 import { useState, useEffect } from "react";
-import apiClient from "@/src/app/lib/api-client";
-import {
-  GET_USER_INFO,
-  UPDATE_PROFILE_ROUTE,
-  ADD_PROFILE_IMAGE_ROUTE,
-} from "@/src/app/utils/constants";
+import apiClient from "../../lib/api-client";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "@/src/app/index";
+import { GET_USER_INFO } from "../../utils/constants";
+import { useGoogleAuth, User, Auth } from "../../services/auth.service";
 
-interface User {
-  email: string;
-  firstName?: string;
-  lastName?: string;
-  image?: string;
-  color?: number;
-  profileSetup?: boolean;
-}
+type ChatHeaderProps = {
+  navigation: NativeStackNavigationProp<RootStackParamList, "ContactsScreen">;
+  userInfo: User; // Thêm userInfo vào props
+};
 
-const ChatHeader = () => {
+const ChatHeader: React.FC<ChatHeaderProps> = ({ navigation, userInfo }) => {
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false); // Bắt đầu với false vì chưa tải dữ liệu
-  const [image, setImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const { logout, getAuth } = useGoogleAuth();
 
   useEffect(() => {
-    const getUserData = async () => {
-      setLoading(true);
-      try {
-        const response = await apiClient.get<User>(GET_USER_INFO, {
-          params: {
-            userID: "66b1822240322af42cd5add9",
-          },
-        });
-        setUser(response.data);
-      } catch (error) {
-        setError((error as Error).message);
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
+    const getUserInfo = () => {
+      setUser(userInfo);
     };
-    if (!user?.image) {
-      getUserData();
-    } else {
-      setLoading(false);
-    }
-  }, [user, setUser]);
+    getUserInfo();
+  }, []);
 
   return (
     <View>
@@ -53,17 +31,25 @@ const ChatHeader = () => {
         <View className="flex flex-row items-center">
           <Image
             className="w-12 h-12 rounded-full"
-            source={require("@/assets/images/in app logo.png")}
+            source={require("../../../../assets/images/in_app_logo.png")}
           />
           <Text className="ml-4 text-lg font-semibold">CTU Message</Text>
+          <Button
+            title="/\"
+            onPress={async () => {
+              // logout().then(() => {
+              //   navigation.navigate("Login");
+              // });
+              logout();
+              navigation.navigate("Login");
+            }}
+          />
         </View>
         <View className="flex flex-row items-center">
           <View className="items-center justify-center flex flex-row">
             <View className="items-end mr-2">
               <Text>Xin chào</Text>
-              <Text>
-                {user && user.firstName ? user.firstName : "Người dùng"}
-              </Text>
+              {/* <Text>{userInfo.name}</Text> */}
             </View>
             {loading ? (
               <Text>Loading...</Text>
@@ -73,7 +59,7 @@ const ChatHeader = () => {
               user && (
                 <View>
                   <Image
-                    source={{ uri: image ? image : user.image }}
+                    source={{ uri: user.picture }}
                     style={{
                       width: 50,
                       height: 50,
