@@ -5,6 +5,7 @@ import * as Google from "expo-auth-session/providers/google";
 import { useState } from "react";
 
 export interface User {
+  userID: string;
   email: string;
   name: string;
   picture?: string;

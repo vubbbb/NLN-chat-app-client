@@ -10,6 +10,7 @@ import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ContactsScreen">;
 interface User {
+  userID: string;
   email: string;
   name: string;
   picture?: string;

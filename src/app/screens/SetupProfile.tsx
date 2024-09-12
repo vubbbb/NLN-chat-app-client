@@ -22,12 +22,14 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface User {
+  userID: string;
   email: string;
   nickname: string;
   profileSetup?: boolean;
 }
 
 interface UserInfoStorage {
+  UserID: string;
   email: string;
   name: string;
   picture?: string;
@@ -42,10 +44,6 @@ export default function SetupProfileScreen({ navigation }: Props) {
   const [userName, setUserName] = React.useState("");
   const [image, setImage] = useState<string | null>(null);
   const [imageLoading, setImageLoading] = useState(true);
-
-
-
-  
 
   useEffect(() => {
     const getUserDataFromStorage = async () => {
@@ -101,9 +99,19 @@ export default function SetupProfileScreen({ navigation }: Props) {
       nickname: userName,
       setupProfile: true,
     });
+    setUser(response.data.user);
+    console.log("User data hihi: ", response.data.user.userID);
     if (response.status === 201) {
       console.log("setup ok: ");
-      await AsyncStorage.setItem("userInfo", JSON.stringify({ email: user?.email, nickname: userName, picture: image }));
+      await AsyncStorage.setItem(
+        "userInfo",
+        JSON.stringify({
+          UserID: response.data.user.userID,
+          email: user?.email,
+          nickname: userName,
+          picture: image,
+        })
+      );
       navigation.reset({
         index: 0, // Chỉ giữ một màn hình trong stack
         routes: [{ name: "ContactsScreen" }], // Đặt ContactsScreen là màn hình gốc

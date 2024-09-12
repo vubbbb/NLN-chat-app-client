@@ -47,7 +47,8 @@ export default function LoginScreen({ navigation }: Props) {
 
       // 3. Thêm trường mới vào object
       parsedItem.nickname = userReponse.nickname; // Thêm trường email
-
+      parsedItem.userID = userReponse.userID; // Thêm trường name
+      console.log("Parsed item: ", parsedItem.userID);
       // 4. Lưu lại object đã cập nhật vào AsyncStorage
       await AsyncStorage.setItem("userInfo", JSON.stringify(parsedItem));
       navigation.reset({
