@@ -8,6 +8,7 @@ export interface User {
   email: string;
   name: string;
   picture?: string;
+  nickname?: string;
 }
 
 export interface Auth {
@@ -39,8 +40,8 @@ export const useGoogleAuth = () => {
     if (response?.type === "success") {
       const authData = response.authentication;
       await AsyncStorage.setItem("auth", JSON.stringify(authData));
-      await getUserData(authData.accessToken);
-      return authData;
+      const userData = await getUserData(authData.accessToken);
+      return userData;
     }
   };
 
@@ -53,22 +54,6 @@ export const useGoogleAuth = () => {
     await AsyncStorage.removeItem("userInfo");
   
     try {
-      // Thực hiện yêu cầu hủy token từ Google
-      // if (token) {
-      //   await AuthSession.revokeAsync(
-      //     { token },
-      //     { revocationEndpoint: "https://oauth2.googleapis.com/revoke" }
-      //   );
-      // }
-
-      
-  
-      // Xóa dữ liệu xác thực và thông tin user khỏi AsyncStorage
-
-  
-      // Đặt `auth` về null sau khi xóa dữ liệu thành công
-      
-  
       return true;
     } catch (error) {
       console.error("Error during logout: ", error);
@@ -98,15 +83,7 @@ export const useGoogleAuth = () => {
 
       // Lưu thông tin user vào AsyncStorage
       await AsyncStorage.setItem("userInfo", JSON.stringify(userData));
-
-      // Kiểm tra lại xem dữ liệu đã lưu thành công hay chưa
-      const savedUser = await AsyncStorage.getItem("userInfo");
-      if (savedUser) {
-        console.log("User saved in AsyncStorage: ", JSON.parse(savedUser));
-      } else {
-        console.error("Failed to save user data to AsyncStorage");
-      }
-
+      console.log("here");
       return userData;
     } catch (error) {
       console.error("Error fetching user data: ", error);

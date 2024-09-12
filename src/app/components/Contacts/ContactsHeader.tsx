@@ -5,7 +5,7 @@ import apiClient from "../../lib/api-client";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/src/app/index";
 import { GET_USER_INFO } from "../../utils/constants";
-import { useGoogleAuth, User, Auth } from "../../services/auth.service";
+import { useGoogleAuth, Auth, User } from "../../services/auth.service";
 
 type ChatHeaderProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ContactsScreen">;
@@ -17,6 +17,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ navigation, userInfo }) => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { logout, getAuth } = useGoogleAuth();
+  const [searchContacts, setSearchContacts] = useState<string>("");
 
   useEffect(() => {
     const getUserInfo = () => {
@@ -24,6 +25,8 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ navigation, userInfo }) => {
     };
     getUserInfo();
   }, []);
+
+  const getContacts = async () => {};
 
   return (
     <View>
@@ -37,9 +40,6 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ navigation, userInfo }) => {
           <Button
             title="/\"
             onPress={async () => {
-              // logout().then(() => {
-              //   navigation.navigate("Login");
-              // });
               logout();
               navigation.navigate("Login");
             }}
@@ -49,7 +49,15 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ navigation, userInfo }) => {
           <View className="items-center justify-center flex flex-row">
             <View className="items-end mr-2">
               <Text>Xin chào</Text>
-              {/* <Text>{userInfo.name}</Text> */}
+              {loading ? (
+                <Text>Loading...</Text>
+              ) : error ? (
+                <Text>{error}</Text>
+              ) : (
+                user && (
+                  <Text>{user.nickname}</Text>
+                )
+              )}
             </View>
             {loading ? (
               <Text>Loading...</Text>
@@ -75,11 +83,12 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ navigation, userInfo }) => {
       </View>
       <View className="p-4 bg-white border-b border-gray-200 flex flex-row items-center justify-center">
         <TextInput
+          onChangeText={setSearchContacts}
           placeholder="Tìm kiếm"
           placeholderTextColor="gray"
           className="bg-gray-100 border-[1px] border-gray-300 rounded-3xl h-[50px] w-[250px] text-center"
         />
-        <Button title="Tìm kiếm" />
+        <Button title="Tìm kiếm" onPress={getContacts} />
       </View>
     </View>
   );

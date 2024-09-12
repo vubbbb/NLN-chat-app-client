@@ -8,11 +8,10 @@ import ChatFooter from "../components/chat/ChatFooter";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ChatScreen">;
 
-const ChatScreen: React.FC<Props> = ({ route }) => {
-  const { user } = route.params;
+const ChatScreen: React.FC<Props> = () => {
   return (
     <SafeAreaView className='items-center justify-center flex-1'>
-        <ChatHeader user={user}/>
+        <ChatHeader/>
         <ChatContainer />
         <ChatFooter />
     </SafeAreaView>

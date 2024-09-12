@@ -1,23 +1,14 @@
-import React from 'react'
-import { View, Text, Image } from "react-native"
+import React from "react";
+import { View, Text, Image } from "react-native";
 
-const ChatHeader = ({user}: any) => {
+const ChatHeader = () => {
   return (
     <View>
-    <View className="p-[20px] justify-center">
-      <Image
-        source={{ uri: user.uri }}
-        style={{
-          width: 150,
-          height: 150,
-          borderRadius: 50,
-          marginRight: 5,
-        }}
-      />
+      <View className="p-[20px] justify-center">
+        <Text>Inside chat Screen</Text>
+      </View>
     </View>
-    <Text>hi {user.id}</Text>
-  </View>
-  )
-}
+  );
+};
 
-export default ChatHeader
+export default ChatHeader;

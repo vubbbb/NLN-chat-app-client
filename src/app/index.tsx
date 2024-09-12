@@ -1,14 +1,12 @@
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import {
-  createNativeStackNavigator,
-  NativeStackScreenProps,
-} from "@react-navigation/native-stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SetupProfileScreen from "./screens/SetupProfile";
 import ContactsScreen from "./screens/ContactsScreen";
 import ChatScreen from "./screens/ChatScreen";
-import { Image } from "react-native";
+import { Image, ActivityIndicator, View } from "react-native"; // Thêm ActivityIndicator
 import LoginScreen from "./screens/Login";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Định nghĩa kiểu cho các màn hình trong trình điều hướng
 export type RootStackParamList = {
@@ -24,9 +22,39 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
+  const [isLoading, setIsLoading] = React.useState(true); // Thêm trạng thái loading
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false); // Kiểm tra trạng thái đăng nhập
+
+  React.useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const storedAuth = await AsyncStorage.getItem("auth");
+        if (storedAuth) {
+          setIsLoggedIn(true); // Đã đăng nhập
+          console.log("User is logged in");
+        }
+      } catch (error) {
+        console.error("Error reading auth data from AsyncStorage:", error);
+      } finally {
+        setIsLoading(false); // Hoàn tất kiểm tra
+      }
+    };
+
+    checkAuth();
+  }, []);
+
+  if (isLoading) {
+    // Hiển thị vòng quay loading trong khi kiểm tra trạng thái đăng nhập
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
   return (
     <NavigationContainer independent>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName={isLoggedIn ? "ContactsScreen" : "Login"}>
         <Stack.Screen
           name="Login"
           component={LoginScreen}
@@ -45,21 +73,20 @@ export default function App() {
         <Stack.Screen
           name="ChatScreen"
           component={ChatScreen}
-          options={({ route }) => ({
-            title: route.params.user.name,
-            headerBackTitle: 'Trở về',
-            headerRight: () => (
-              <Image
-                source={{ uri: route.params.user.uri }}
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  marginRight: 10,
-                }}
-              />
-            ),
-          })}
+          // options={({ route }) => ({
+          //   headerBackTitle: "Trở về",
+          //   headerRight: () => (
+          //     <Image
+          //       source={{ uri: route.params.user.uri }}
+          //       style={{
+          //         width: 40,
+          //         height: 40,
+          //         borderRadius: 20,
+          //         marginRight: 10,
+          //       }}
+          //     />
+          //   ),
+          // })}
         />
       </Stack.Navigator>
     </NavigationContainer>

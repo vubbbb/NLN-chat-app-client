@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Image, Button, FlatList, Pressable } from "react-native";
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/src/app/index";
@@ -10,14 +10,15 @@ type ContactsContainerProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ContactsScreen">;
 };
 
-
 interface Item {
   img_uri: string;
   name: string;
   id: number;
 }
 
-const ContactsContainer: React.FC<ContactsContainerProps> = ({ navigation }) => {
+const ContactsContainer: React.FC<ContactsContainerProps> = ({
+  navigation,
+}) => {
   const [data, setData] = useState([
     {
       id: 1,
@@ -49,57 +50,23 @@ const ContactsContainer: React.FC<ContactsContainerProps> = ({ navigation }) => 
       img_uri:
         "https://th.bing.com/th/id/OIP.4W97WdNAfTqVyDfHEtFinQHaHa?rs=1&pid=ImgDetMain",
     },
-    {
-      id: 6,
-      name: "User 6",
-      img_uri:
-        "https://th.bing.com/th/id/OIP.4W97WdNAfTqVyDfHEtFinQHaHa?rs=1&pid=ImgDetMain",
-    },
-    {
-      id: 7,
-      name: "User 7",
-      img_uri:
-        "https://th.bing.com/th/id/OIP.4W97WdNAfTqVyDfHEtFinQHaHa?rs=1&pid=ImgDetMain",
-    },
-    {
-      id: 8,
-      name: "User 8",
-      img_uri:
-        "https://th.bing.com/th/id/OIP.4W97WdNAfTqVyDfHEtFinQHaHa?rs=1&pid=ImgDetMain",
-    },
-    {
-      id: 9,
-      name: "User 9",
-      img_uri:
-        "https://th.bing.com/th/id/OIP.4W97WdNAfTqVyDfHEtFinQHaHa?rs=1&pid=ImgDetMain",
-    },
-    {
-      id: 10,
-      name: "User 10",
-      img_uri:
-        "https://th.bing.com/th/id/OIP.4W97WdNAfTqVyDfHEtFinQHaHa?rs=1&pid=ImgDetMain",
-    },
-    {
-      id: 11,
-      name: "User 11",
-      img_uri:
-        "https://th.bing.com/th/id/OIP.4W97WdNAfTqVyDfHEtFinQHaHa?rs=1&pid=ImgDetMain",
-    },
-    {
-      id: 12,
-      name: "User 12",
-      img_uri:
-        "https://th.bing.com/th/id/OIP.4W97WdNAfTqVyDfHEtFinQHaHa?rs=1&pid=ImgDetMain",
-    },
     // ... thêm nhiều item nữa
   ]);
 
-  const renderItem = ({ item }: { item: Item }) => {
+  const [count, setCount] = useState(0);
+
+  const handlePress = (item: Item) => {
+    navigation.navigate("ChatScreen");
+  }
+
+  const renderItem = useCallback(({ item }: { item: Item }) => {
     return (
       <View className=" bg-gray-100">
         <Pressable
           key={item.id}
-          onPress={() => navigation.navigate("ChatScreen", { user: { id: item.id, name: item.name, email: 'user1@example.com', uri: item.img_uri } })} // Truyền item khi điều hướng
+          onPress={() => {
+            handlePress(item);
+          }} // Truyền item khi điều hướng
         >
           <View className="flex flex-row">
             <View className="p-[20px] justify-center">
@@ -123,11 +90,15 @@ const ContactsContainer: React.FC<ContactsContainerProps> = ({ navigation }) => 
         </Pressable>
       </View>
     );
-  };
+  }, [handlePress]);
+
+  const memoizedData = useMemo(() => data, [data]);
+
+
 
   return (
     <FlatList
-      data={data}
+      data={memoizedData}
       renderItem={renderItem}
       keyExtractor={(item) => item.id}
       style={{ height: 530 }}

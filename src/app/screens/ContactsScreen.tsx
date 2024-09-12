@@ -19,6 +19,7 @@ const ContactsScreen = ({ navigation }: Props) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true); // Trạng thái loading
 
+
   useEffect(() => {
     const getUserDataFromStorage = async () => {
       try {
