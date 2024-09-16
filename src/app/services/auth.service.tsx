@@ -51,9 +51,7 @@ export const useGoogleAuth = () => {
     const token = auth?.accessToken as string;
     console.log("Logging out with token: ", auth?.accessToken);
     await setAuth(null);
-    await AsyncStorage.removeItem("auth");
-    await AsyncStorage.removeItem("userInfo");
-  
+    await AsyncStorage.clear();
     try {
       return true;
     } catch (error) {

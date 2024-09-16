@@ -7,7 +7,7 @@ import ChatScreen from "./screens/ChatScreen";
 import { Image, ActivityIndicator, View } from "react-native"; // Thêm ActivityIndicator
 import LoginScreen from "./screens/Login";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { SocketProvider } from "./context/SocketContext";
+
 
 // Định nghĩa kiểu cho các màn hình trong trình điều hướng
 export type RootStackParamList = {
@@ -54,46 +54,30 @@ export default function App() {
   }
 
   return (
-    <SocketProvider>
-      <NavigationContainer independent>
-        <Stack.Navigator
-          initialRouteName={isLoggedIn ? "ContactsScreen" : "Login"}
-        >
-          <Stack.Screen
-            name="Login"
-            component={LoginScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="SetupProfile"
-            component={SetupProfileScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="ContactsScreen"
-            component={ContactsScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="ChatScreen"
-            component={ChatScreen}
-            // options={({ route }) => ({
-            //   headerBackTitle: "Trở về",
-            //   headerRight: () => (
-            //     <Image
-            //       source={{ uri: route.params.user.uri }}
-            //       style={{
-            //         width: 40,
-            //         height: 40,
-            //         borderRadius: 20,
-            //         marginRight: 10,
-            //       }}
-            //     />
-            //   ),
-            // })}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </SocketProvider>
+    <NavigationContainer independent>
+      <Stack.Navigator
+        initialRouteName={isLoggedIn ? "ContactsScreen" : "Login"}
+      >
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SetupProfile"
+          component={SetupProfileScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ContactsScreen"
+          component={ContactsScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ChatScreen"
+          component={ChatScreen}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }

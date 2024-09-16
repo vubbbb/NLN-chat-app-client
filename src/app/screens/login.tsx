@@ -50,11 +50,14 @@ export default function LoginScreen({ navigation }: Props) {
       parsedItem.userID = userReponse.userID; // Thêm trường name
       console.log("Parsed item: ", parsedItem.userID);
       // 4. Lưu lại object đã cập nhật vào AsyncStorage
-      await AsyncStorage.setItem("userInfo", JSON.stringify(parsedItem));
-      navigation.reset({
-        index: 0, // Chỉ giữ một màn hình trong stack
-        routes: [{ name: "ContactsScreen" }], // Đặt ContactsScreen là màn hình gốc
-      });
+      await AsyncStorage.setItem("userInfo", JSON.stringify(parsedItem)).then(
+        () => {
+          navigation.reset({
+            index: 0, // Chỉ giữ một màn hình trong stack
+            routes: [{ name: "ContactsScreen" }], // Đặt ContactsScreen là màn hình gốc
+          });
+        }
+      );
     } else {
       navigation.reset({
         index: 0, // Chỉ giữ một màn hình trong stack

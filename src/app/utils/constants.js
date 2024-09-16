@@ -1,5 +1,6 @@
 // import { SERVER_URL } from '@env';
-export const HOST = "https://nln-chat-app-server-git-main-tran-vu-binhs-projects.vercel.app"
+export const HOST = "https://nln-chat-app-server.onrender.com"
+// export const HOST = "http://localhost:8080";
 export const AUTH_ROUTES = "api/auth";
 export const SIGNUP_ROUTE = `${AUTH_ROUTES}/signup`;
 export const LOGIN_ROUTE = `${AUTH_ROUTES}/login`;

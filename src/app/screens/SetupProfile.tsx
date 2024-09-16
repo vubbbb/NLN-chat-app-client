@@ -106,7 +106,7 @@ export default function SetupProfileScreen({ navigation }: Props) {
       await AsyncStorage.setItem(
         "userInfo",
         JSON.stringify({
-          UserID: response.data.user.userID,
+          userID: response.data.user.userID,
           email: user?.email,
           nickname: userName,
           picture: image,

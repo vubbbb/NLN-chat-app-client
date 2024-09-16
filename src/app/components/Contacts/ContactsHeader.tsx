@@ -6,6 +6,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/src/app/index";
 import { GET_USER_INFO } from "../../utils/constants";
 import { useGoogleAuth, Auth, User } from "../../services/auth.service";
+import { useSocket } from "../../context/SocketContext";
 
 type ChatHeaderProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ContactsScreen">;
@@ -18,6 +19,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ navigation, userInfo }) => {
   const [loading, setLoading] = useState(false);
   const { logout, getAuth } = useGoogleAuth();
   const [searchContacts, setSearchContacts] = useState<string>("");
+  const socket = useSocket(); // Lấy socket từ context
 
   useEffect(() => {
     const getUserInfo = () => {
@@ -25,6 +27,16 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ navigation, userInfo }) => {
     };
     getUserInfo();
   }, []);
+
+  // Hàm logout và disconnect socket
+  const handleLogout = async () => {
+    if (socket) {
+      socket.disconnect(); // Ngắt kết nối socket
+      console.log("Socket disconnected");
+    }
+    await logout(); // Đăng xuất
+    navigation.replace("Login"); // Chuyển hướng về màn hình login
+  };
 
   const getContacts = async () => {};
 
@@ -40,8 +52,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ navigation, userInfo }) => {
           <Button
             title="/\"
             onPress={async () => {
-              logout();
-              navigation.navigate("Login");
+              handleLogout();
             }}
           />
         </View>
@@ -54,9 +65,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ navigation, userInfo }) => {
               ) : error ? (
                 <Text>{error}</Text>
               ) : (
-                user && (
-                  <Text>{user.nickname}</Text>
-                )
+                user && <Text>{user.nickname}</Text>
               )}
             </View>
             {loading ? (
