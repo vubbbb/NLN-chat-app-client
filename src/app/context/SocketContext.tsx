@@ -9,28 +9,10 @@ import React, {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import io, { Socket } from "socket.io-client";
 import { HOST } from "../utils/constants";
-
-
-
-// Định nghĩa interface cho User
-export interface User {
-  userID: string;
-  email: string;
-  name: string;
-  picture?: string;
-  nickname?: string;
-}
+import { User } from "../type/type";
 
 // Tạo Context với kiểu dữ liệu cụ thể cho socket
 const SocketContext = createContext<Socket | null>(null);
-
-// Hook để sử dụng SocketContext
-export const useSocket = () => {
-  const socket =  useContext(SocketContext);
-  if(socket){
-    return socket;
-  }
-};
 
 // Định nghĩa kiểu props cho SocketProvider
 interface SocketProviderProps {
@@ -73,12 +55,11 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         console.log("Connected to server with ID:", socket.current?.id);
       });
 
-
       // TODO: Xử lý các sự kiện từ server
       const handleRecieveMessage = (message: any) => {};
 
       socket.current.on("recieveMessage", handleRecieveMessage);
-      socket.current.emit("sendMessage", (message: any)=>{
+      socket.current.emit("sendMessage", (message: any) => {
         console.log("Send message: ", message);
       });
       socket.current.on("connect_error", (err) => {
@@ -88,14 +69,17 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       socket.current.on("disconnect", (error) => {
         console.log("Socket disconnected: ", error);
       });
-
     }
   }, [userID]); // Chạy lại khi user thay đổi
-
 
   return (
     <SocketContext.Provider value={socket.current}>
       {children}
     </SocketContext.Provider>
   );
+};
+
+// Hook để sử dụng SocketContext
+export const useSocket = () => {
+  return useContext(SocketContext);
 };
