@@ -1,15 +1,15 @@
-import React from 'react'
-import { View, Text } from "react-native"
+import React from 'react';
+import { View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const ChatFooter = () => {
   return (
-    <View className='flex flex-row justify-between p-[20px]'>
-        <Icon name="comments" size={20} color="black" className="pl-8"/>
-        <Icon name="group" size={20} color="black" className="p-0"/>
-        <Icon name="user" size={20} color="black" className="pr-8"/>
-    </View> 
-  )
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
+      <Icon name="comments" size={20} color="black" style={{ paddingLeft: 8 }} />
+      <Icon name="group" size={20} color="black" />
+      <Icon name="user" size={20} color="black" style={{ paddingRight: 8 }} />
+    </View>
+  );
 }
 
-export default ChatFooter
+export default ChatFooter;

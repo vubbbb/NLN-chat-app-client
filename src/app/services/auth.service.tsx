@@ -3,23 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as AuthSession from "expo-auth-session";
 import * as Google from "expo-auth-session/providers/google";
 import { useState } from "react";
-
-export interface User {
-  userID: string;
-  email: string;
-  name: string;
-  picture?: string;
-  nickname?: string;
-}
-
-export interface Auth {
-  accessToken: string;
-  tokenType: string;
-  expiresIn: string;
-  scope: string;
-  state: string;
-  issuedAt: string;
-}
+import { Auth, User } from "../type/type";
 
 const googleAuthConfig = {
   iosClientId:
@@ -41,8 +25,11 @@ export const useGoogleAuth = () => {
     if (response?.type === "success") {
       const authData = response.authentication;
       await AsyncStorage.setItem("auth", JSON.stringify(authData));
-      const userData = await getUserData(authData.accessToken);
-      return userData;
+      if (authData) {
+        const userData = await getUserData(authData.accessToken);
+        return userData;
+      }
+      return null;
     }
   };
 
@@ -59,7 +46,6 @@ export const useGoogleAuth = () => {
       return false;
     }
   };
-  
 
   const getAuth = async (): Promise<Auth | null> => {
     const jsonValue = await AsyncStorage.getItem("auth");

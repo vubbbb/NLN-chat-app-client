@@ -7,17 +7,10 @@ import ChatScreen from "./screens/ChatScreen";
 import { Image, ActivityIndicator, View } from "react-native"; // Thêm ActivityIndicator
 import LoginScreen from "./screens/Login";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SocketProvider } from "./context/SocketContext";
+import { RootStackParamList, Contact } from "./type/type";
 
 
-// Định nghĩa kiểu cho các màn hình trong trình điều hướng
-export type RootStackParamList = {
-  Login: undefined;
-  SetupProfile: undefined;
-  ContactsScreen: undefined;
-  ChatScreen: {
-    user: { id: number; name: string; email: string; uri: string };
-  };
-};
 
 // Tạo Stack Navigator với kiểu đã định nghĩa
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -54,30 +47,49 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer independent>
-      <Stack.Navigator
-        initialRouteName={isLoggedIn ? "ContactsScreen" : "Login"}
-      >
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="SetupProfile"
-          component={SetupProfileScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="ContactsScreen"
-          component={ContactsScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="ChatScreen"
-          component={ChatScreen}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <SocketProvider>
+      <NavigationContainer independent>
+        <Stack.Navigator
+          initialRouteName={isLoggedIn ? "ContactsScreen" : "Login"}
+        >
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="SetupProfile"
+            component={SetupProfileScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ContactsScreen"
+            component={ContactsScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ChatScreen"
+            component={ChatScreen}
+            options={({ route }) => ({
+              title: route.params.contact.nickname,
+              headerBackTitle: "Trở về",
+              headerBackTitleVisible: true,
+              headerTitleAlign: "center",
+              headerRight: () => (
+                <Image
+                  source={{ uri: route.params.contact.picture }}
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 20,
+                    marginRight: 10,
+                  }}
+                />
+              ),
+            })}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SocketProvider>
   );
 }

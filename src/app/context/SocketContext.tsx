@@ -9,10 +9,8 @@ import React, {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import io, { Socket } from "socket.io-client";
 import { HOST } from "../utils/constants";
-import { withLayoutContext } from "expo-router";
 
-// Tạo Context với kiểu dữ liệu cụ thể cho socket
-const SocketContext = createContext<Socket | null>(null);
+
 
 // Định nghĩa interface cho User
 export interface User {
@@ -23,9 +21,15 @@ export interface User {
   nickname?: string;
 }
 
+// Tạo Context với kiểu dữ liệu cụ thể cho socket
+const SocketContext = createContext<Socket | null>(null);
+
 // Hook để sử dụng SocketContext
 export const useSocket = () => {
-  return useContext(SocketContext);
+  const socket =  useContext(SocketContext);
+  if(socket){
+    return socket;
+  }
 };
 
 // Định nghĩa kiểu props cho SocketProvider
@@ -54,16 +58,14 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   }, []); // Chạy một lần khi component mount
 
   useEffect(() => {
+    console.log("User ID: ", userID);
     // Khởi tạo socket nếu user có giá trị và socket chưa được khởi tạo
     if (userID && !socket.current) {
       socket.current = io(HOST, {
-        timeout: 60000,
-        reconnection: false,
         query: {
           userID: userID,
         },
         withCredentials: true,
-        // rejectUnauthorized: false,
         transports: ["websocket"],
       });
 
@@ -71,12 +73,14 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         console.log("Connected to server with ID:", socket.current?.id);
       });
 
+
       // TODO: Xử lý các sự kiện từ server
       const handleRecieveMessage = (message: any) => {};
 
-
       socket.current.on("recieveMessage", handleRecieveMessage);
-
+      socket.current.emit("sendMessage", (message: any)=>{
+        console.log("Send message: ", message);
+      });
       socket.current.on("connect_error", (err) => {
         // the reason of the error, for example "xhr poll error"
         console.log(err.message);
@@ -85,11 +89,9 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         console.log("Socket disconnected: ", error);
       });
 
-      // return () => {
-      //   socket.current?.disconnect();
-      // };
     }
   }, [userID]); // Chạy lại khi user thay đổi
+
 
   return (
     <SocketContext.Provider value={socket.current}>

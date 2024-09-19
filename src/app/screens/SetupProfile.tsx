@@ -16,29 +16,17 @@ import {
   SIGNUP_ROUTE,
 } from "../utils/constants";
 import {} from "react-native-safe-area-context";
-import { RootStackParamList } from "../index";
+import { RootStackParamList, User } from "../type/type";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-interface User {
-  userID: string;
-  email: string;
-  nickname: string;
-  profileSetup?: boolean;
-}
 
-interface UserInfoStorage {
-  UserID: string;
-  email: string;
-  name: string;
-  picture?: string;
-}
 
 type Props = NativeStackScreenProps<RootStackParamList, "SetupProfile">;
 
 export default function SetupProfileScreen({ navigation }: Props) {
-  const [user, setUser] = useState<UserInfoStorage | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false); // Bắt đầu với false vì chưa tải dữ liệu
   const [userName, setUserName] = React.useState("");
@@ -51,7 +39,7 @@ export default function SetupProfileScreen({ navigation }: Props) {
         setImageLoading(true);
         const userDataString = await AsyncStorage.getItem("userInfo");
         if (userDataString) {
-          const userData: UserInfoStorage = JSON.parse(userDataString);
+          const userData: User = JSON.parse(userDataString);
           setUser(userData); // Gán dữ liệu sau khi lấy được
           setImage(userData.picture as string);
         }
@@ -98,6 +86,7 @@ export default function SetupProfileScreen({ navigation }: Props) {
       email: user?.email,
       nickname: userName,
       setupProfile: true,
+      picture: image,
     });
     setUser(response.data.user);
     console.log("User data hihi: ", response.data.user.userID);

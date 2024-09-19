@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, Button, ActivityIndicator } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../index";
-import { useGoogleAuth, User, Auth } from "../services/auth.service";
+import { RootStackParamList } from "../type/type";
+import { useGoogleAuth } from "../services/auth.service";
+import { User, Auth } from "../type/type";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GET_USER_INFO, SIGNUP_ROUTE } from "../utils/constants";
 import apiClient from "../lib/api-client";
@@ -11,7 +12,7 @@ type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
 export default function LoginScreen({ navigation }: Props) {
   const [auth, setAuth] = useState<Auth | null>(null);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState(false);
   const {
     request,
@@ -33,6 +34,7 @@ export default function LoginScreen({ navigation }: Props) {
       email: user?.email,
       nickname: user?.name,
       profileSetup: false,
+      picture: user?.picture,
     });
     const userSetupState = response.data.user.setupProfile;
     const userReponse = response.data.user;
@@ -70,7 +72,7 @@ export default function LoginScreen({ navigation }: Props) {
     if (response?.type === "success") {
       setLoading(true);
       login().then((userData) => {
-        setUser(userData);
+        setUser(userData || undefined);
         console.log("User data: set");
       });
     }

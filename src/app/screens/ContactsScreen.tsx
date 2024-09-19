@@ -7,7 +7,7 @@ import {
   SafeAreaView,
   ActivityIndicator,
 } from "react-native";
-import { RootStackParamList } from "../index";
+import { RootStackParamList, User } from "../type/type";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import ChatHeader from "../components/Contacts/ContactsHeader";
 import ContactsContainer from "../components/Contacts/ContactsContainer";
@@ -17,15 +17,10 @@ import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { SocketProvider } from "../context/SocketContext";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ContactsScreen">;
-interface User {
-  userID: string;
-  email: string;
-  name: string;
-  picture?: string;
-}
+
 
 const ContactsScreen = ({ navigation }: Props) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState(true); // Trạng thái loading
 
   useEffect(() => {
@@ -57,15 +52,21 @@ const ContactsScreen = ({ navigation }: Props) => {
       </View>
     );
   }
+  if (!user) {
+    // Xử lý khi user là null, có thể hiển thị thông báo lỗi hoặc điều hướng
+    return (
+      <View className="flex-1 items-center justify-center">
+        <Text>Không thể tải dữ liệu người dùng</Text>
+      </View>
+    );
+  }
 
   return (
-    <SocketProvider>
-      <SafeAreaView className="items-center justify-center flex-1">
-        <ChatHeader navigation={navigation} userInfo={user} />
-        <ContactsContainer navigation={navigation} />
-        <ChatFooter />
-      </SafeAreaView>
-    </SocketProvider>
+    <SafeAreaView className="items-center justify-center flex-1">
+      <ChatHeader navigation={navigation} userInfo={user} />
+      <ContactsContainer navigation={navigation} />
+      <ChatFooter />
+    </SafeAreaView>
   );
 };
 
