@@ -33,6 +33,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ navigation, userInfo }) => {
   const socket = useContext(SocketContext);
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [userInfoModalVisible, setUserInfoModalVisible] = useState(false);
 
   useEffect(() => {
     const getUserInfo = () => {
@@ -78,16 +79,10 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ navigation, userInfo }) => {
       <View className="flex flex-row w-[100vw] items-center justify-between p-4 bg-white border-b border-gray-200">
         <View className="flex flex-row items-center">
           <Image
-            className="w-12 h-12 rounded-full"
+            className="w-14 h-14 rounded-full"
             source={require("../../../../assets/images/in_app_logo.png")}
           />
-          <Text className="ml-4 text-lg font-semibold">CTU Message</Text>
-          <Button
-            title="/\"
-            onPress={async () => {
-              handleLogout();
-            }}
-          />
+          <Text className="ml-0 text-lg font-semibold pb-[2px]">Message</Text>
         </View>
         <View className="flex flex-row items-center">
           <View className="items-center justify-center flex flex-row">
@@ -108,15 +103,17 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ navigation, userInfo }) => {
             ) : (
               user && (
                 <View>
-                  <Image
-                    source={{ uri: user.picture }}
-                    style={{
-                      width: 50,
-                      height: 50,
-                      borderRadius: 50,
-                      marginRight: 5,
-                    }}
-                  />
+                  <Pressable onPress={() => setUserInfoModalVisible(true)}>
+                    <Image
+                      source={{ uri: user.picture }}
+                      style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 50,
+                        marginRight: 5,
+                      }}
+                    />
+                  </Pressable>
                 </View>
               )
             )}
@@ -125,23 +122,22 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ navigation, userInfo }) => {
       </View>
       <View className="p-4 bg-white border-b border-gray-200 flex flex-row items-center justify-center">
         <View>
-          
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={modalVisible}
-              onRequestClose={() => {
-                alert("Modal has been closed.");
-                setModalVisible(!modalVisible);
-              }}
-            >
-              <View style={styles.centeredView}>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              alert("Modal has been closed.");
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <View style={styles.centeredView}>
               <Pressable onPressOut={() => setModalVisible(false)}>
                 <View style={styles.modalView} className="h-[52vh]">
                   <TextInput
                     onChangeText={(text) => searchContactsFunction(text)}
                     placeholder="Tìm kiếm"
-                    placeholderTextColor="gray"
+                    placeholderTextColor="#0d7cc1"
                     className="bg-gray-100 border-[1px] border-gray-300 rounded-3xl h-[50px] w-[250px] text-center"
                   />
                   {/* <Button title="Tìm kiếm" onPress={getContacts} /> */}
@@ -186,16 +182,69 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ navigation, userInfo }) => {
                     )}
                   </ScrollView>
                 </View>
-                </Pressable>
-              </View>
-            </Modal>
+              </Pressable>
+            </View>
+          </Modal>
           <Pressable
-            style={[styles.button, styles.buttonOpen]}
+            className="w-[90vw] h-[40px] bg-gray-100 rounded-3xl flex items-center justify-center"
+            style={[styles.button]}
             onPress={() => setModalVisible(true)}
           >
-            <Text style={styles.textStyle}>Tìm kiếm cuộc trò chuyện</Text>
+            <Text className="text-[#0d7cc1] font-bold">
+              Tìm kiếm cuộc trò chuyện
+            </Text>
           </Pressable>
         </View>
+      </View>
+      {/* // userInfoModal */}
+      <View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={userInfoModalVisible}
+          onRequestClose={() => {
+            alert("Modal has been closed.");
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <Pressable onPressOut={() => setUserInfoModalVisible(false)}>
+              <View style={styles.modalView} className="h-[52vh]">
+                <View className="flex flex-col items-center p-4 border-b border-gray-200">
+                  <View className="mr-4">
+                    <Image
+                      source={{ uri: user?.picture }}
+                      style={{
+                        width: 150,
+                        height: 150,
+                        borderRadius: 75,
+                        borderColor: "#0d7cc1",
+                        borderWidth: 2,
+                        marginBottom: 20,
+                      }}
+                    />
+                  </View>
+                  <View className="justify-center items-center">
+                    <Text className="text-lg font-semibold">
+                      {user?.nickname}
+                    </Text>
+                    <Text className="text-gray-500">{user?.email}</Text>
+                  </View>
+                </View>
+                  <Pressable
+                    className="mt-12"
+                    style={[styles.button, styles.buttonClose]}
+                    onPress={() => {
+                      setUserInfoModalVisible(false);
+                      handleLogout();
+                    }}
+                  >
+                    <Text className="text-white text-2xl">Đăng xuất</Text>
+                  </Pressable>
+              </View>
+            </Pressable>
+          </View>
+        </Modal>
       </View>
     </View>
   );
@@ -229,14 +278,11 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 2,
   },
-  buttonOpen: {
-    backgroundColor: "#0d7cc1",
-  },
   buttonClose: {
     backgroundColor: "#0d7cc1",
   },
   textStyle: {
-    color: "white",
+    color: "0d7cc1",
     fontWeight: "bold",
     textAlign: "center",
   },
