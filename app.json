@@ -13,6 +13,13 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "hostType": "tunnel",
+    "lanType": "ip",
+    "dev": true,
+    "minify": false,
+    "urlRandomness": "npyK0QE",
+    "https": false,
+    "devClient": false,
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
@@ -26,7 +33,12 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.ctu.ctumessage"
+      "package": "com.ctu.ctumessage",
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "web": {
       "bundler": "metro",

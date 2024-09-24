@@ -184,6 +184,7 @@ export default function SetupProfileScreen({ navigation }: Props) {
   };
 
   return (
+
     <View className="flex-1 items-center justify-center bg-white">
       <View className="m-8">
         <Image
@@ -243,5 +244,6 @@ export default function SetupProfileScreen({ navigation }: Props) {
         />
       </View>
     </View>
+
   );
 }

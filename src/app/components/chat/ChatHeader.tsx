@@ -8,8 +8,7 @@ type ChatHeaderProps = {
 const ChatHeader: React.FC<ChatHeaderProps> = ({ contact }) => {
   return (
     <View>
-      <View className="p-[20px] justify-center">
-        <Text>{contact.nickname}</Text>
+      <View className=" justify-center">
         <Image source={{ uri: contact.picture }} />
       </View>
     </View>

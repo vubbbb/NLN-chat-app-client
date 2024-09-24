@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, SafeAreaView } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../type/type";
 import ChatHeader from "../components/chat/ChatHeader";
 import ChatContainer from "../components/chat/ChatContainer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { User } from "../type/type";
-import { Contact } from "../type/type";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ChatScreen">;
 
@@ -24,14 +29,16 @@ const ChatScreen: React.FC<Props> = ({ route }) => {
     };
     getUserDataFromStorage();
   }, []);
+
   if (!userInfo) {
     return <Text>Loading...</Text>;
   }
+
   return (
-    <SafeAreaView className="items-center justify-center flex-1">
-      <ChatHeader contact={contact} />
-      <ChatContainer userInfo={userInfo} contact={contact} />
-    </SafeAreaView>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ChatHeader contact={contact} />
+          <ChatContainer userInfo={userInfo} contact={contact} />
+      </SafeAreaView>
   );
 };
 

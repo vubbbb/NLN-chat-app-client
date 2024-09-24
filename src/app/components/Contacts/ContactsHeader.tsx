@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   View,
   Text,
@@ -17,7 +17,7 @@ import { RootStackParamList, Contact } from "../../type/type";
 import { GET_USER_INFO, SEARCH_CONTACTS_ROUTE } from "../../utils/constants";
 import { useGoogleAuth } from "../../services/auth.service";
 import { User } from "../../type/type";
-import { useSocket } from "../../context/SocketContext";
+import { SocketContext } from "../../context/SocketContext";
 
 type ChatHeaderProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ContactsScreen">;
@@ -30,7 +30,8 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ navigation, userInfo }) => {
   const [loading, setLoading] = useState(false);
   const { logout, getAuth } = useGoogleAuth();
   const [searchContacts, setSearchContacts] = useState<Contact[]>([]);
-  const socket = useSocket(); // Lấy socket từ context
+  const socket = useContext(SocketContext);
+
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
@@ -124,16 +125,17 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ navigation, userInfo }) => {
       </View>
       <View className="p-4 bg-white border-b border-gray-200 flex flex-row items-center justify-center">
         <View>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              alert("Modal has been closed.");
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <View style={styles.centeredView}>
+          
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                alert("Modal has been closed.");
+                setModalVisible(!modalVisible);
+              }}
+            >
+              <View style={styles.centeredView}>
               <Pressable onPressOut={() => setModalVisible(false)}>
                 <View style={styles.modalView} className="h-[52vh]">
                   <TextInput
@@ -183,20 +185,10 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ navigation, userInfo }) => {
                       </Text>
                     )}
                   </ScrollView>
-
-                  {/* <View className="items-center justify-center pt-8">
-                <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={() => setModalVisible(!modalVisible)}
-                  className="items-center justify-center"
-                >
-                  <Text style={styles.textStyle}>Đóng</Text>
-                </Pressable>
-                </View> */}
                 </View>
-              </Pressable>
-            </View>
-          </Modal>
+                </Pressable>
+              </View>
+            </Modal>
           <Pressable
             style={[styles.button, styles.buttonOpen]}
             onPress={() => setModalVisible(true)}

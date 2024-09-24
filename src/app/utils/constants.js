@@ -1,6 +1,6 @@
 // import { SERVER_URL } from '@env';
 export const HOST = "https://nln-chat-app-server.onrender.com"
-// export const HOST = "http://localhost:8080";
+
 export const AUTH_ROUTES = "api/auth";
 export const SIGNUP_ROUTE = `${AUTH_ROUTES}/signup`;
 export const LOGIN_ROUTE = `${AUTH_ROUTES}/login`;
@@ -11,3 +11,7 @@ export const REMOVE_PROFILE_IMAGE_ROUTE = `${AUTH_ROUTES}/remove-profile-image`;
 
 export const CONTACTS_ROUTES = "api/contacts";
 export const SEARCH_CONTACTS_ROUTE = `${CONTACTS_ROUTES}/search`;
+export const GET_DM_LIST_ROUTE = `${CONTACTS_ROUTES}/getDMList`;
+
+export const MESSAGES_ROUTES = "api/messages";
+export const GET_MESSAGES_ROUTE = `${MESSAGES_ROUTES}/get-messages`;

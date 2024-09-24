@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { View, Text, Image, Button, ActivityIndicator } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../type/type";
@@ -7,6 +7,7 @@ import { User, Auth } from "../type/type";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GET_USER_INFO, SIGNUP_ROUTE } from "../utils/constants";
 import apiClient from "../lib/api-client";
+import { SocketContext } from "../context/SocketContext";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
@@ -14,6 +15,7 @@ export default function LoginScreen({ navigation }: Props) {
   const [auth, setAuth] = useState<Auth | null>(null);
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState(false);
+  const socket = useContext(SocketContext);
   const {
     request,
     response,
@@ -48,8 +50,9 @@ export default function LoginScreen({ navigation }: Props) {
       let parsedItem = item ? JSON.parse(item) : {};
 
       // 3. Thêm trường mới vào object
-      parsedItem.nickname = userReponse.nickname; // Thêm trường email
-      parsedItem.userID = userReponse.userID; // Thêm trường name
+      parsedItem.nickname = userReponse.nickname; // Thêm trường nickname
+      parsedItem.userID = userReponse.userID; // Thêm trường userID
+
       console.log("Parsed item: ", parsedItem.userID);
       // 4. Lưu lại object đã cập nhật vào AsyncStorage
       await AsyncStorage.setItem("userInfo", JSON.stringify(parsedItem)).then(
@@ -65,6 +68,11 @@ export default function LoginScreen({ navigation }: Props) {
         index: 0, // Chỉ giữ một màn hình trong stack
         routes: [{ name: "SetupProfile" }], // Đặt ContactsScreen là màn hình gốc
       });
+    }
+    if (socket) {
+      socket.connect();
+      console.log("Socket connected");
+      // Đăng ký userID sau khi kết nối
     }
   };
 

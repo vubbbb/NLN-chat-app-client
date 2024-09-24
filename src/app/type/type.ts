@@ -14,6 +14,15 @@ export type Contact = {
   picture: string;
 };
 
+export interface Message {
+  sender: string;
+  receiver: string;
+  content: string;
+  messageType: string;
+  fileURL?: string;
+  fromSelf?: boolean; // Thêm thuộc tính này nếu cần
+}
+
 export interface User {
   userID: string;
   email: string;
@@ -30,3 +39,12 @@ export interface Auth {
   state: string;
   issuedAt: string;
 }
+
+export type ContactList = {
+  _id: string,
+  lastMessageTime: Date,
+  lastMessageContent: string,
+  nickname: string,
+  email: string,
+  picture: string,
+};

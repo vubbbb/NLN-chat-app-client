@@ -4,11 +4,12 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SetupProfileScreen from "./screens/SetupProfile";
 import ContactsScreen from "./screens/ContactsScreen";
 import ChatScreen from "./screens/ChatScreen";
-import { Image, ActivityIndicator, View } from "react-native"; // Thêm ActivityIndicator
+import { Image, ActivityIndicator, View, KeyboardAvoidingView, Platform} from "react-native"; // Thêm ActivityIndicator
 import LoginScreen from "./screens/Login";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { SocketProvider } from "./context/SocketContext";
+import { SocketContext, socket } from "./context/SocketContext";
 import { RootStackParamList, Contact } from "./type/type";
+
 
 
 
@@ -47,7 +48,11 @@ export default function App() {
   }
 
   return (
-    <SocketProvider>
+    <KeyboardAvoidingView
+    style={{ flex: 1 }}
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+  >
+    <SocketContext.Provider value={socket}>
       <NavigationContainer independent>
         <Stack.Navigator
           initialRouteName={isLoggedIn ? "ContactsScreen" : "Login"}
@@ -75,6 +80,7 @@ export default function App() {
               headerBackTitle: "Trở về",
               headerBackTitleVisible: true,
               headerTitleAlign: "center",
+              headerStyle: {backgroundColor: "grey"},
               headerRight: () => (
                 <Image
                   source={{ uri: route.params.contact.picture }}
@@ -90,6 +96,7 @@ export default function App() {
           />
         </Stack.Navigator>
       </NavigationContainer>
-    </SocketProvider>
+    </SocketContext.Provider>
+    </KeyboardAvoidingView>
   );
 }

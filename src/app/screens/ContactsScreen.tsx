@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   View,
   Text,
@@ -13,8 +13,7 @@ import ChatHeader from "../components/Contacts/ContactsHeader";
 import ContactsContainer from "../components/Contacts/ContactsContainer";
 import ChatFooter from "../components/Contacts/ContactsFooter";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
-import { SocketProvider } from "../context/SocketContext";
+import { SocketContext } from "../context/SocketContext";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ContactsScreen">;
 
@@ -22,6 +21,7 @@ type Props = NativeStackScreenProps<RootStackParamList, "ContactsScreen">;
 const ContactsScreen = ({ navigation }: Props) => {
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState(true); // Trạng thái loading
+  const socket = useContext(SocketContext); // Lấy socket từ context
 
   useEffect(() => {
     const getUserDataFromStorage = async () => {
@@ -30,19 +30,18 @@ const ContactsScreen = ({ navigation }: Props) => {
         if (userDataString) {
           const userData: User = JSON.parse(userDataString);
           setUser(userData); // Gán dữ liệu sau khi lấy được
+          if (userData) {
+            setLoading(false);
+            socket?.emit("register", userData.userID);
+            console.log("Registering user with socket");
+          }
         }
       } catch (error) {
         console.error("Error retrieving user data from AsyncStorage", error);
-      } finally {
-        if (user) {
-          setLoading(false);
-        } else {
-          getUserDataFromStorage();
-        }
       }
     };
     getUserDataFromStorage();
-  }); // Chỉ chạy 1 lần khi component được render
+  }, []); // Chỉ chạy 1 lần khi component được render
 
   if (loading) {
     // Hiển thị ActivityIndicator khi đang lấy dữ liệu
@@ -64,7 +63,7 @@ const ContactsScreen = ({ navigation }: Props) => {
   return (
     <SafeAreaView className="items-center justify-center flex-1">
       <ChatHeader navigation={navigation} userInfo={user} />
-      <ContactsContainer navigation={navigation} />
+      <ContactsContainer navigation={navigation} userInfo={user}/>
       <ChatFooter />
     </SafeAreaView>
   );
