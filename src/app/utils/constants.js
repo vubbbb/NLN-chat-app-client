@@ -9,9 +9,14 @@ export const UPDATE_PROFILE_ROUTE = `${AUTH_ROUTES}/update-profile`;
 export const ADD_PROFILE_IMAGE_ROUTE = `${AUTH_ROUTES}/add-profile-image`;
 export const REMOVE_PROFILE_IMAGE_ROUTE = `${AUTH_ROUTES}/remove-profile-image`;
 
+
 export const CONTACTS_ROUTES = "api/contacts";
 export const SEARCH_CONTACTS_ROUTE = `${CONTACTS_ROUTES}/search`;
 export const GET_DM_LIST_ROUTE = `${CONTACTS_ROUTES}/getDMList`;
 
 export const MESSAGES_ROUTES = "api/messages";
 export const GET_MESSAGES_ROUTE = `${MESSAGES_ROUTES}/get-messages`;
+
+export const GROUP_CHAT_ROUTES = "api/groups";
+export const CREATE_GROUP_CHAT_ROUTE = `${GROUP_CHAT_ROUTES}/create-group-chat`;
+export const GET_USER_GROUP_CHATS_ROUTE = `${GROUP_CHAT_ROUTES}/get-user-group-chats`;

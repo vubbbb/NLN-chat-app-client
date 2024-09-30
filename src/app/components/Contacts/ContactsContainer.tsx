@@ -106,8 +106,8 @@ const ContactsContainer: React.FC<ContactsContainerProps> = ({
                 <Text className="font-bold text-xl">{item.nickname}</Text>
                 <View className="flex flex-row items-center">
                   <Text>
-                    {item.lastMessageContent.length > 24
-                      ? item.lastMessageContent.slice(0, 24) + "..."
+                    {item.lastMessageContent.length > 10
+                      ? item.lastMessageContent.slice(0, 10) + "..."
                       : item.lastMessageContent + " "}
                   </Text>
                   <Text>

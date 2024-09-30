@@ -18,13 +18,16 @@ import { GET_USER_INFO, SEARCH_CONTACTS_ROUTE } from "../../utils/constants";
 import { useGoogleAuth } from "../../services/auth.service";
 import { User } from "../../type/type";
 import { SocketContext } from "../../context/SocketContext";
+import SearchContacsModal from "../modal/SearchContacsModal";
+import CreateGroupChatModal from "../modal/CreateGroupChatModal";
+import LogoutModal from "../modal/LogoutModal";
 
-type ChatHeaderProps = {
+type ContactHeaderProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ContactsScreen">;
   userInfo: User; // Thêm userInfo vào props
 };
 
-const ChatHeader: React.FC<ChatHeaderProps> = ({ navigation, userInfo }) => {
+const ChatHeader: React.FC<ContactHeaderProps> = ({ navigation, userInfo }) => {
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -33,6 +36,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ navigation, userInfo }) => {
   const socket = useContext(SocketContext);
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [createGroupModalVisible, setCreateGroupModalVisible] = useState(false);
   const [userInfoModalVisible, setUserInfoModalVisible] = useState(false);
 
   useEffect(() => {
@@ -122,129 +126,49 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ navigation, userInfo }) => {
       </View>
       <View className="p-4 bg-white border-b border-gray-200 flex flex-row items-center justify-center">
         <View>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              alert("Modal has been closed.");
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <View style={styles.centeredView}>
-              <Pressable onPressOut={() => setModalVisible(false)}>
-                <View style={styles.modalView} className="h-[52vh]">
-                  <TextInput
-                    onChangeText={(text) => searchContactsFunction(text)}
-                    placeholder="Tìm kiếm"
-                    placeholderTextColor="#0d7cc1"
-                    className="bg-gray-100 border-[1px] border-gray-300 rounded-3xl h-[50px] w-[250px] text-center"
-                  />
-                  {/* <Button title="Tìm kiếm" onPress={getContacts} /> */}
-                  <ScrollView className="h-[100vh] w-[75vw] bg-white">
-                    {searchContacts.length > 0 ? (
-                      searchContacts.map((contact) => (
-                        <Pressable
-                          key={contact._id}
-                          onPress={() => {
-                            setModalVisible(false);
-                            navigation.navigate("ChatScreen", {
-                              contact: contact,
-                            });
-                          }}
-                        >
-                          <View className="flex flex-row items-center p-4 border-b border-gray-200">
-                            <View className="mr-4">
-                              <Image
-                                source={{ uri: contact.picture }}
-                                style={{
-                                  width: 50,
-                                  height: 50,
-                                  borderRadius: 25,
-                                }}
-                              />
-                            </View>
-                            <View>
-                              <Text className="text-lg font-semibold">
-                                {contact.nickname}
-                              </Text>
-                              <Text className="text-gray-500">
-                                {contact.email}
-                              </Text>
-                            </View>
-                          </View>
-                        </Pressable>
-                      ))
-                    ) : (
-                      <Text className="text-gray-500 p-4">
-                        Không tìm thấy kết quả.
-                      </Text>
-                    )}
-                  </ScrollView>
-                </View>
-              </Pressable>
-            </View>
-          </Modal>
-          <Pressable
-            className="w-[90vw] h-[40px] bg-gray-100 rounded-3xl flex items-center justify-center"
-            style={[styles.button]}
-            onPress={() => setModalVisible(true)}
-          >
-            <Text className="text-[#0d7cc1] font-bold">
-              Tìm kiếm cuộc trò chuyện
-            </Text>
-          </Pressable>
+          <SearchContacsModal
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+            searchContacts={searchContacts}
+            searchContactsFunction={searchContactsFunction}
+            navigation={navigation}
+          />
+          <CreateGroupChatModal
+            modalVisible={createGroupModalVisible}
+            setModalVisible={setCreateGroupModalVisible}
+            searchContacts={searchContacts}
+            searchContactsFunction={searchContactsFunction}
+            navigation={navigation}
+            user={user}
+          />
+          <View className="flex flex-row">
+            <Pressable
+              className="w-[60vw] h-[40px] mr-4 bg-gray-100 rounded-3xl flex items-center justify-center"
+              style={[styles.button]}
+              onPress={() => setModalVisible(true)}
+            >
+              <Text className="text-[#0d7cc1] font-bold">
+                Tìm kiếm cuộc trò chuyện
+              </Text>
+            </Pressable>
+            <Pressable
+              className="w-[30vw] h-[40px] bg-gray-100 rounded-3xl flex items-center justify-center"
+              style={[styles.button]}
+              onPress={() => setCreateGroupModalVisible(true)}
+            >
+              <Text className="text-[#0d7cc1] font-bold">Tạo nhóm</Text>
+            </Pressable>
+          </View>
         </View>
       </View>
       {/* // userInfoModal */}
       <View>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={userInfoModalVisible}
-          onRequestClose={() => {
-            alert("Modal has been closed.");
-            setModalVisible(!modalVisible);
-          }}
-        >
-          <View style={styles.centeredView}>
-            <Pressable onPressOut={() => setUserInfoModalVisible(false)}>
-              <View style={styles.modalView} className="h-[52vh]">
-                <View className="flex flex-col items-center p-4 border-b border-gray-200">
-                  <View className="mr-4">
-                    <Image
-                      source={{ uri: user?.picture }}
-                      style={{
-                        width: 150,
-                        height: 150,
-                        borderRadius: 75,
-                        borderColor: "#0d7cc1",
-                        borderWidth: 2,
-                        marginBottom: 20,
-                      }}
-                    />
-                  </View>
-                  <View className="justify-center items-center">
-                    <Text className="text-lg font-semibold">
-                      {user?.nickname}
-                    </Text>
-                    <Text className="text-gray-500">{user?.email}</Text>
-                  </View>
-                </View>
-                  <Pressable
-                    className="mt-12"
-                    style={[styles.button, styles.buttonClose]}
-                    onPress={() => {
-                      setUserInfoModalVisible(false);
-                      handleLogout();
-                    }}
-                  >
-                    <Text className="text-white text-2xl">Đăng xuất</Text>
-                  </Pressable>
-              </View>
-            </Pressable>
-          </View>
-        </Modal>
+        <LogoutModal
+          modalVisible={userInfoModalVisible}
+          setModalVisible={setUserInfoModalVisible}
+          user={user}
+          handleLogout={handleLogout}
+        />
       </View>
     </View>
   );
