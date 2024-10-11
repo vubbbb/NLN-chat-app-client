@@ -20,3 +20,4 @@ export const GET_MESSAGES_ROUTE = `${MESSAGES_ROUTES}/get-messages`;
 export const GROUP_CHAT_ROUTES = "api/groups";
 export const CREATE_GROUP_CHAT_ROUTE = `${GROUP_CHAT_ROUTES}/create-group-chat`;
 export const GET_USER_GROUP_CHATS_ROUTE = `${GROUP_CHAT_ROUTES}/get-user-group-chats`;
+export const GET_GROUP_MESSAGES_ROUTE = `${GROUP_CHAT_ROUTES}/get-group-messages`;

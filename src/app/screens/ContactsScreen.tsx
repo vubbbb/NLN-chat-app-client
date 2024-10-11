@@ -11,9 +11,10 @@ import { RootStackParamList, User } from "../type/type";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import ChatHeader from "../components/Contacts/ContactsHeader";
 import ContactsContainer from "../components/Contacts/ContactsContainer";
-import ChatFooter from "../components/Contacts/ContactsFooter";
+import CoctactsFooter from "../components/Contacts/ContactsFooter";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SocketContext } from "../context/SocketContext";
+import GroupsContainer from "../components/Groups/GroupsContainer";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ContactsScreen">;
 
@@ -22,6 +23,7 @@ const ContactsScreen = ({ navigation }: Props) => {
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState(true); // Trạng thái loading
   const socket = useContext(SocketContext); // Lấy socket từ context
+  const [currentView, setCurrentView] = useState<'contacts' | 'groups'>('contacts');
 
   useEffect(() => {
     const getUserDataFromStorage = async () => {
@@ -63,8 +65,12 @@ const ContactsScreen = ({ navigation }: Props) => {
   return (
     <SafeAreaView className="items-center justify-center flex-1">
       <ChatHeader navigation={navigation} userInfo={user} />
-      <ContactsContainer navigation={navigation} userInfo={user}/>
-      <ChatFooter />
+      {currentView == 'contacts' ? (
+        <ContactsContainer navigation={navigation} userInfo={user} />
+      ) : (
+        <GroupsContainer navigation={navigation} userInfo={user} />
+      )}
+      <CoctactsFooter setCurrentView={setCurrentView}/>
     </SafeAreaView>
   );
 };

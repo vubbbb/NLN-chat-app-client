@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SetupProfileScreen from "./screens/SetupProfile";
 import ContactsScreen from "./screens/ContactsScreen";
 import ChatScreen from "./screens/ChatScreen";
+import GroupChatScreen from "./screens/GroupChatScreen";
 import { Image, ActivityIndicator, View, KeyboardAvoidingView, Platform} from "react-native"; // Thêm ActivityIndicator
 import LoginScreen from "./screens/Login";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -92,6 +93,17 @@ export default function App() {
                   }}
                 />
               ),
+            })}
+          />
+          <Stack.Screen
+            name="GroupChatScreen"
+            component={GroupChatScreen}
+            options={({ route }) => ({
+              title: route.params.group.name,
+              headerBackTitle: "Trở về",
+              headerBackTitleVisible: true,
+              headerTitleAlign: "center",
+              headerStyle: {backgroundColor: "grey"},
             })}
           />
         </Stack.Navigator>

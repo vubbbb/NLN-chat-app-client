@@ -4,6 +4,7 @@ export type RootStackParamList = {
   SetupProfile: undefined;
   ContactsScreen: undefined;
   ChatScreen: { contact: Contact };
+  GroupChatScreen: { group: Group, userInfo: User };
 };
 
 export type Contact = {
@@ -15,12 +16,25 @@ export type Contact = {
 };
 
 export interface Message {
+  // _id: string;
   sender: string;
   receiver: string;
   content: string;
   messageType: string;
   fileURL?: string;
   fromSelf?: boolean; // Thêm thuộc tính này nếu cần
+  timeStamp?: Date;
+}
+
+export interface GroupMessage {
+  // _id: string;
+  sender: User;
+  receiver: string;
+  content: string;
+  messageType: string;
+  fileURL?: string;
+  fromSelf?: boolean; // Thêm thuộc tính này nếu cần
+  timeStamp?: Date;
 }
 
 export interface User {
@@ -47,4 +61,14 @@ export type ContactList = {
   nickname: string,
   email: string,
   picture: string,
+};
+
+export type Group = {
+  _id: string,
+  name: string,
+  members: string[],
+  admin: string,
+  messages: Message[],
+  createdAt: Date,
+  updatedAt: Date,
 };
