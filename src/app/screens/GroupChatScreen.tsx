@@ -1,5 +1,12 @@
 import React, { useEffect, useState, useContext } from "react";
-import { View, Text, FlatList, TextInput, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TextInput,
+  StyleSheet,
+  SafeAreaView,
+} from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList, GroupMessage } from "../type/type";
 import { SocketContext } from "../context/SocketContext";
@@ -62,10 +69,12 @@ const GroupChatScreen: React.FC<Props> = ({ route }) => {
     <View
       style={[
         styles.messageContainer,
-        item.sender.userID === userInfo.userID ? styles.sentMessage : styles.receivedMessage,
+        item.sender.nickname === userInfo.nickname
+          ? styles.sentMessage
+          : styles.receivedMessage,
       ]}
     >
-      {item.sender.userID !== userInfo.userID && (
+      {item.sender.nickname !== userInfo.nickname && (
         <Text style={styles.sender}>{item.sender.nickname}: </Text>
       )}
       <Text style={styles.content}>{item.content}</Text>
@@ -73,21 +82,24 @@ const GroupChatScreen: React.FC<Props> = ({ route }) => {
   );
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={messages}
-        renderItem={renderMessage}
-        keyExtractor={(item, index) => index.toString()}
-      />
-      <TextInput
-        placeholder="Nhập tin nhắn"
-        value={message}
-        onChangeText={setMessage}
-        style={styles.input}
-        onSubmitEditing={sendMessage} // Gửi tin nhắn khi nhấn enter
-        returnKeyType="send" // Hiển thị nút gửi trên bàn phím
-      />
-    </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <FlatList
+          data={messages}
+          renderItem={renderMessage}
+          keyExtractor={(item, index) => index.toString()}
+        />
+        <TextInput
+          placeholder="Nhập tin nhắn"
+          value={message}
+          onChangeText={setMessage}
+          // style={styles.input}
+          className="border-2 p-2 m-2 mt-0 rounded-xl bg-gray-200"
+          onSubmitEditing={sendMessage} // Gửi tin nhắn khi nhấn enter
+          returnKeyType="send" // Hiển thị nút gửi trên bàn phím
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -98,25 +110,46 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   messageContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     marginBottom: 5,
-    maxWidth: '80%', // Giới hạn độ rộng
+    maxWidth: "80%",
   },
   sender: {
     fontWeight: "bold",
+    marginLeft: 5,
   },
   content: {
-    marginLeft: 5,
+    marginLeft: -5,
     padding: 10,
     borderRadius: 5,
+    fontSize: 16,
   },
   sentMessage: {
+    backgroundColor: "#DCF8C6",
     alignSelf: "flex-end",
-    backgroundColor: "#dcf8c6", // Màu nền cho tin nhắn của người gửi
+    padding: 10,
+    borderRadius: 10,
+    maxWidth: "80%",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 2,
   },
   receivedMessage: {
-    alignSelf: "flex-start",
-    backgroundColor: "#f0f0f0", // Màu nền cho tin nhắn của người nhận
+    backgroundColor: "#FFFFFF",
+    justifyContent: "flex-start",
+    marginVertical: 5,
+    paddingHorizontal: 10,
+    padding: 10,
+    borderRadius: 10,
+    maxWidth: "80%",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 2,
+    marginLeft: 5,
   },
   input: {
     borderWidth: 1,

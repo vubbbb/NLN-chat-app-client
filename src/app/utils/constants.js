@@ -16,6 +16,7 @@ export const GET_DM_LIST_ROUTE = `${CONTACTS_ROUTES}/getDMList`;
 
 export const MESSAGES_ROUTES = "api/messages";
 export const GET_MESSAGES_ROUTE = `${MESSAGES_ROUTES}/get-messages`;
+export const UPLOAD_FILE_ROUTE = `${MESSAGES_ROUTES}/upload-file`;
 
 export const GROUP_CHAT_ROUTES = "api/groups";
 export const CREATE_GROUP_CHAT_ROUTE = `${GROUP_CHAT_ROUTES}/create-group-chat`;

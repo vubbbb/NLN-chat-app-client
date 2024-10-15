@@ -34,8 +34,13 @@ const ContactsContainer: React.FC<ContactsContainerProps> = ({
       const response = await apiClient.post(GET_DM_LIST_ROUTE, {
         params: { userID: userInfo.userID },
       });
-      if (response.status === 200) {
+
+      if (response.status === 200 && response.data.contacts) {
+        // Kiểm tra nếu contacts không phải là null hoặc undefined
         setContactList(response.data.contacts);
+      } else {
+        console.error("No contacts found or invalid response data");
+        setContactList([]); // Đảm bảo rằng contactList được gán với mảng rỗng
       }
     } catch (error) {
       console.error("Error retrieving contact list", error);
@@ -106,10 +111,13 @@ const ContactsContainer: React.FC<ContactsContainerProps> = ({
                 <Text className="font-bold text-xl">{item.nickname}</Text>
                 <View className="flex flex-row items-center">
                   <Text>
-                    {item.lastMessageContent.length > 10
-                      ? item.lastMessageContent.slice(0, 10) + "..."
-                      : item.lastMessageContent + " "}
+                    {item.lastMessageContent
+                      ? item.lastMessageContent.length > 10
+                        ? item.lastMessageContent.slice(0, 10) + "..."
+                        : item.lastMessageContent + " "
+                      : "File đính kèm"}
                   </Text>
+
                   <Text>
                     {(() => {
                       const messageDate = new Date(item.lastMessageTime);

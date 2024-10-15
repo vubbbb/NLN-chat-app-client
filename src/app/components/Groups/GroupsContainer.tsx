@@ -29,15 +29,13 @@ const GroupsContainer: React.FC<GroupsContainerProps> = ({
   // Hàm lấy danh sách nhóm chat từ server
   const loadGroupsList = async () => {
     try {
-      console.log("Loading group list: ", userInfo.userID);
       const response = await apiClient.post(GET_USER_GROUP_CHATS_ROUTE, {
         params: {
           userID: userInfo.userID,
         },
       });
       if (response.status === 200) {
-        setGroupList(response.data.groupChats); // Lưu dữ liệu nhóm vào groupList
-        console.log("Group list: ", response.data.groupChats);
+        setGroupList(response.data.groupChats);
       }
     } catch (error) {
       console.error("Error retrieving group list", error);
