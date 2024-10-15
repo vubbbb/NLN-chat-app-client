@@ -59,14 +59,11 @@ const ContactsContainer: React.FC<ContactsContainerProps> = ({
 
   useEffect(() => {
     if (!socket) return;
-
     const handleMessage = (message: Message) => {
       console.log("New message received: ", message.content);
       loadContactList();
     };
-
     socket.on("recieveMessage", handleMessage);
-
     return () => {
       socket.off("recieveMessage", handleMessage);
     };

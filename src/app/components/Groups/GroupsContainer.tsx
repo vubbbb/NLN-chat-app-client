@@ -56,14 +56,14 @@ const GroupsContainer: React.FC<GroupsContainerProps> = ({
     if (!socket) return;
 
     const handleMessage = (message: Message) => {
-      console.log("New message received: ", message.content);
+      console.log("New group message received: ", message.content);
       loadGroupsList();
     };
 
-    socket.on("receiveMessage", handleMessage);
+    socket.on("receive_group_message", handleMessage);
 
     return () => {
-      socket.off("receiveMessage", handleMessage);
+      socket.off("receive_group_message", handleMessage);
     };
   }, [socket, loadGroupsList]);
 

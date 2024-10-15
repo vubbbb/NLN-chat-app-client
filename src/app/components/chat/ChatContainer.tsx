@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   View,
   TextInput,
@@ -7,6 +7,8 @@ import {
   Text,
   Image,
   Linking,
+  TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { User, Contact, Message } from "../../type/type";
 import { SocketContext } from "../../context/SocketContext";
@@ -15,6 +17,7 @@ import apiClient from "../../lib/api-client";
 import * as DocumentPicker from "expo-document-picker";
 import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
+import Icon from "react-native-vector-icons/MaterialIcons"; // Import icon
 
 interface ChatContainerProps {
   userInfo: User;
@@ -31,6 +34,13 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ userInfo, contact }) => {
   );
   const [image, setImage] = useState<string | null>(null);
   const [imageLoading, setImageLoading] = useState(true);
+  const flatListRef = useRef<FlatList>(null); // Tham chiếu FlatList
+  const [sending, setSending] = useState(false);
+
+  // Hàm cuộn xuống dưới cùng danh sách tin nhắn
+  const scrollToBottom = () => {
+    flatListRef.current?.scrollToEnd({ animated: true });
+  };
 
   const pickImage = async () => {
     // Yêu cầu quyền truy cập
@@ -138,27 +148,30 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ userInfo, contact }) => {
         { ...messageData, fromSelf: true },
       ]);
       setMessage(""); // Xóa nội dung sau khi gửi
+      setSending(false);
+      scrollToBottom();
     }
   };
 
   // Lắng nghe sự kiện nhận tin nhắn
   useEffect(() => {
     if (socket) {
-      socket.on("receiveMessage", (messageData) => {
-        console.log("New message received   d: ", messageData.sender._id);
+      socket.on("recieveMessage", (messageData) => {
+        // Thêm fromSelf vào tin nhắn nhận được
         if (messageData.sender._id === contact._id) {
           setMessages((prevMessages) => [
             ...prevMessages,
             { ...messageData, fromSelf: false },
           ]);
         }
+        scrollToBottom();
       });
     } else {
       console.log("Socket not available");
     }
     // Cleanup: ngắt kết nối socket khi component unmount
     return () => {
-      socket?.off("receiveMessage");
+      socket?.off("recieveMessage");
     };
   }, [socket]);
 
@@ -179,6 +192,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ userInfo, contact }) => {
           }))
         );
         setLoading(false);
+        scrollToBottom();
       } catch (error) {
         console.error("Error fetching messages", error);
       }
@@ -195,6 +209,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ userInfo, contact }) => {
   return (
     <View style={{ flex: 1 }}>
       <FlatList
+        ref={flatListRef} // Thêm tham chiếu vào đây
         data={messages}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
@@ -251,34 +266,67 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ userInfo, contact }) => {
             </View>
           </View>
         )}
+        onContentSizeChange={scrollToBottom}
       />
 
-      <TextInput
-        placeholder="Nhập tin nhắn"
-        value={message}
-        onChangeText={setMessage}
-        onSubmitEditing={() => sendMessage(undefined, "text")}
-        returnKeyType="send"
-        className="border-2 p-2 m-2 mt-0 rounded-xl bg-gray-200"
-      />
-      <Button title="Chọn file" onPress={pickDocument} />
-      <Button title="Chọn anh" onPress={pickImage} />
-      <Button
-        title="Gửi"
-        onPress={() => {
-          if (file && file.uri) {
-            const fileType = file.mimeType || "application/octet-stream"; // Xác định loại MIME
-            updateFileToCloudinaryAndSend(file.uri, fileType);
-            setFile(null);
-          } else if (image) {
-            updateFileToCloudinaryAndSend(image, "file");
-            setImage(null);
-          }
-           else {
-            console.log("No file selected to send");
-          }
-        }}
-      />
+      <View style={{ flexDirection: "row", alignItems: "center", padding: 10 }}>
+        <TextInput
+          placeholder="Nhập tin nhắn"
+          value={message}
+          onChangeText={setMessage}
+          style={{
+            flex: 1,
+            borderWidth: 1,
+            borderColor: "#ccc",
+            borderRadius: 20,
+            padding: 10,
+            marginRight: 10,
+          }}
+        />
+
+        {image ? (
+          <Image
+            source={{ uri: image }}
+            style={{ width: 50, height: 50, borderRadius: 50, marginRight: 10 }}
+          />
+        ) : file ? (
+          <Text>{file.name}</Text>
+        ) : null}
+
+        <TouchableOpacity onPress={pickImage} style={{ marginRight: 10 }}>
+          <Icon name="photo" size={24} color="blue" />
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={pickDocument} style={{ marginRight: 10 }}>
+          <Icon name="attach-file" size={24} color="blue" />
+        </TouchableOpacity>
+
+        {sending ? (
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : (
+          <TouchableOpacity
+            onPress={() => {
+              if (image) {
+                updateFileToCloudinaryAndSend(image, "image");
+                setImage(null);
+                setImageLoading(true);
+                setSending(true);
+              } else if (file) {
+                updateFileToCloudinaryAndSend(
+                  file.uri,
+                  file.mimeType as string
+                );
+                setFile(null);
+                setSending(true);
+              } else if (message.trim()) {
+                sendMessage(undefined, "text");
+              }
+            }}
+          >
+            <Icon name="send" size={24} color="blue" />
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 };
