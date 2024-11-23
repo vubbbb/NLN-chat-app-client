@@ -134,9 +134,9 @@ const ChatHeader: React.FC<ContactHeaderProps> = ({ navigation, userInfo }) => {
             navigation={navigation}
           />
           <CreateGroupChatModal
-            modalVisible={createGroupModalVisible}
+            modalVisible={!!createGroupModalVisible}
             setModalVisible={setCreateGroupModalVisible}
-            searchContacts={searchContacts}
+            searchContacts={Array.isArray(searchContacts) ? searchContacts : []}
             searchContactsFunction={searchContactsFunction}
             navigation={navigation}
             user={user}

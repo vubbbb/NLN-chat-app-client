@@ -18,7 +18,7 @@ type CreateGroupChatModalProps = {
   setModalVisible: (visible: boolean) => void;
   searchContacts: Contact[];
   searchContactsFunction: (searchTerm: string) => void;
-  navigation: any; // Thay bằng loại chính xác cho navigation nếu cần
+  navigation: any | null; // Thay bằng loại chính xác cho navigation nếu cần
   user: User | null;
 };
 
@@ -109,6 +109,7 @@ const CreateGroupChatModal: React.FC<CreateGroupChatModalProps> = ({
               className="bg-gray-100 border-[1px] border-gray-300 rounded-3xl h-[50px] w-[250px] text-center"
             />
 
+            <View></View>
             {/* Danh sách thành viên đã chọn */}
             {selectedContacts.length > 0 && (
               <View
@@ -121,7 +122,7 @@ const CreateGroupChatModal: React.FC<CreateGroupChatModalProps> = ({
                 <ScrollView
                   horizontal
                   showsHorizontalScrollIndicator={false}
-                  className="h-[30vh]"
+                 
                 >
                   {selectedContacts.map((contact) => (
                     <Pressable
@@ -146,7 +147,7 @@ const CreateGroupChatModal: React.FC<CreateGroupChatModalProps> = ({
             )}
 
             {/* Danh sách liên hệ */}
-            <ScrollView className="h-[50vh] w-[75vw] bg-white">
+            <ScrollView >
               {searchContacts.length > 0 ? (
                 searchContacts.map((contact) => (
                   <Pressable
@@ -168,7 +169,7 @@ const CreateGroupChatModal: React.FC<CreateGroupChatModalProps> = ({
                         <Text className="text-lg font-semibold">
                           {contact.nickname}
                         </Text>
-                        <Text className="text-gray-500">{contact.email}</Text>
+                        <Text className="text-gray-500">{contact.email }</Text>
                         {isSelected(contact) && (
                           <Text className="text-[#0d7cc1]">Đã chọn</Text>
                         )}

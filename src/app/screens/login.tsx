@@ -113,7 +113,7 @@ export default function LoginScreen({ navigation }: Props) {
       </View>
       <View className="m-8">
         {loading ? (
-          <ActivityIndicator size="large" color="#0000ff" />
+          <Text>Đang...</Text>
         ) : (
           <Button
             title={"Đăng nhập bằng mail"}

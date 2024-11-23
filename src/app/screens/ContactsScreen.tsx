@@ -49,7 +49,7 @@ const ContactsScreen = ({ navigation }: Props) => {
     // Hiển thị ActivityIndicator khi đang lấy dữ liệu
     return (
       <View className="flex-1 items-center justify-center">
-        <ActivityIndicator size="large" color="#0000ff" />
+        <Text>Đang...</Text>
       </View>
     );
   }

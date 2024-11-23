@@ -302,7 +302,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ userInfo, contact }) => {
         </TouchableOpacity>
 
         {sending ? (
-          <ActivityIndicator size="large" color="#0000ff" />
+          <Text>Đang...</Text>
         ) : (
           <TouchableOpacity
             onPress={() => {

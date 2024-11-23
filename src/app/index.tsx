@@ -5,8 +5,8 @@ import SetupProfileScreen from "./screens/SetupProfile";
 import ContactsScreen from "./screens/ContactsScreen";
 import ChatScreen from "./screens/ChatScreen";
 import GroupChatScreen from "./screens/GroupChatScreen";
-import { Image, ActivityIndicator, View, KeyboardAvoidingView, Platform} from "react-native"; // Thêm ActivityIndicator
-import LoginScreen from "./screens/Login";
+import { Image, ActivityIndicator, View, KeyboardAvoidingView, Platform, Text} from "react-native"; // Thêm ActivityIndicator
+import LoginScreen from "./screens/login";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SocketContext, socket } from "./context/SocketContext";
 import { RootStackParamList, Contact } from "./type/type";
@@ -43,7 +43,7 @@ export default function App() {
     // Hiển thị vòng quay loading trong khi kiểm tra trạng thái đăng nhập
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <Text>Đang...</Text>
       </View>
     );
   }

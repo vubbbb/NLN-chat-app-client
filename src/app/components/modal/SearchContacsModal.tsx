@@ -46,7 +46,7 @@ const SearchContactsModal: React.FC<SearchModalProps> = ({
               className="bg-gray-100 border-[1px] border-gray-300 rounded-3xl h-[50px] w-[250px] text-center"
             />
             {/* <Button title="Tìm kiếm" onPress={getContacts} /> */}
-            <ScrollView className="h-[100vh] w-[75vw] bg-white">
+            <ScrollView >
               {searchContacts.length > 0 ? (
                 searchContacts.map((contact) => (
                   <Pressable
